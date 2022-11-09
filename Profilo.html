@@ -1,0 +1,80 @@
+<html>
+<head>
+   <title>My Note</title>
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+   integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/fontawesome.min.css">
+   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+   </script>
+</head>
+<body>
+   <div class="container">
+      <div class="Corpo">
+         <h5 class="Titolo">Aggiungi Nota</h5>
+           <div style="display: flex; grid-gap: 18px;">
+               <div class="form-outline w-50 mb-4">
+                  <textarea class="form-control" id="todoText" rows="3"></textarea>
+               </div>
+               <button class="btn btn-primary"
+               id="AggiungiNota" style= "background-color:skyblue;color: black; height: 60px; width: 140px;">
+                  Aggiungi Nota
+               </button>
+            </div>
+      </div>
+      <hr>
+      <h3 style="color:blue">Note Precedenti..</h3>
+      <hr>
+      <div id="TuttiAppunti" class="row container-fluid"> </div>
+   </div>
+   <script>
+      const StampaLista=()=>{
+         let TuttiAppunti = localStorage.getItem("TuttiAppunti");
+         if (!TuttiAppunti) notes = [];
+         else notes = JSON.parse(TuttiAppunti);
+         let html = "";
+         for(let index=0;index<notes.length;index++) {
+            html +=`
+            <div style="height: 3rem; align-item:right; width: 18rem;">
+               <div style="display: flex; grid-gap: 18px;">
+                  <p class="card-text">${notes[index]}</p>
+                  <i id="${index}" style="cursor:pointer; color: red; fontsize: 20px" onclick=
+                  "CancellaNota(this.id)" class="fa fa-trash"></i>
+               </div>
+            </div>
+            `;
+         }
+         let localStorage_Notes = document.getElementById("TuttiAppunti");
+         if (notes.length == 0)
+            localStorage_Notes.innerHTML = `Non sono presenti note..`;
+         else
+            localStorage_Notes.innerHTML = html;
+      }
+      document.getElementById("AggiungiNota").addEventListener("click", ()=>{
+         let todoText = document.getElementById("todoText");
+         if(!(todoText.value)){
+            alert("Please write something to create todo.")
+            return;
+         }
+         let TuttiAppunti = localStorage.getItem("TuttiAppunti");
+         if (!TuttiAppunti) NoteListObj = [];
+         else
+         NoteListObj = JSON.parse(TuttiAppunti);
+         NoteListObj.push(todoText.value);
+         localStorage.setItem("TuttiAppunti", JSON.stringify(NoteListObj));
+         todoText.value = "";
+         StampaLista();
+      });
+      const CancellaNota=(ind)=>{
+         let TuttiAppunti = localStorage.getItem("TuttiAppunti");
+         if (TuttiAppunti != null)
+         notes = JSON.parse(TuttiAppunti);
+         notes.splice(ind, 1);
+         let str_notes=JSON.stringify(notes);
+         localStorage.setItem("TuttiAppunti",str_notes);
+         StampaLista();
+      }
+      StampaLista();
+   </script>
+</body>
+</html>
